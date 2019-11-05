@@ -41,7 +41,7 @@ services:
 
 - environment 配置容器的环境变量
 
-### docker-compose 构建 SpringBoot 应用, 使用 links 连接（老一代方式）
+### docker-compose 构建 SpringBoot 应用
 
 docker-compose.yml 文件配置:
 
@@ -57,7 +57,7 @@ app:
     - './logs:/logs'
 ```
 
-### docker-compose 连接 mysql 和 SpringBoot 应用
+### docker-compose 连接 mysql 和 SpringBoot 应用, 使用 links 连接（老一代方式）
 
 ```yml
 version: '2'
