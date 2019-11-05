@@ -2,10 +2,11 @@ version: '2'
 
 services:
   mysql:
+    network_mode: 'bridge'
     image: mysql:5.7
-    container_name: mymysql
+    container_name: mysql
     ports:
-      - 3306:3306
+      - '3306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       # MYSQL_ROOT_HOST: '%'
@@ -13,4 +14,4 @@ services:
     volumes:
       - './db:/var/lib/mysql'
       - './init:/docker-entrypoint-initdb.d/'
-      - './conf:/etc/mysql'
+      - './conf/my.cnf:/etc/my.cnf'
