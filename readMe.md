@@ -2,6 +2,8 @@
 
 docker-compose 构建 mysql、nignx、redis、Springboot 镜像，单独构建、共同构建以及镜像之间的互联;
 
+tips: 通过 links 和 networks 实现容器互联时，在项目中可以直接通过 mysqlUrl:port 访问 mysql;
+
 ### docker-compose 构建 mysql 镜像（简单的版本）
 
 docker-compose.yml 文件配置:
@@ -92,3 +94,44 @@ services:
 ```
 
 ### docker-compose 构建 SpringBoot 应用, 使用 networks (功能强大)
+
+docker-compose.yml 文件配置:
+
+```yml
+version: '2'
+
+services:
+  mysql:
+    # network_mode: 'bridge'
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      # MYSQL_ROOT_HOST: '%'
+    restart: always
+    volumes:
+      - './db:/var/lib/mysql'
+      - './init:/docker-entrypoint-initdb.d/'
+      - './conf/my.cnf:/etc/my.cnf'
+    networks:
+      - sell-db
+  app:
+    container_name: java-docker
+    image: java-docker
+    build: ./app
+    ports:
+      - '8080:8080'
+    volumes:
+      - './logs:/logs'
+    depends_on:
+      - mysql
+    # links:
+    #   - mysql
+    networks:
+      - sell-db
+networks: sell-db:
+```
+
+tips: 不使用 links, 用 networks 把 app 和 mysql 用同一个 networks 连接;
