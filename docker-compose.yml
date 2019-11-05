@@ -2,7 +2,7 @@ version: '2'
 
 services:
   mysql:
-    network_mode: 'bridge'
+    # network_mode: 'bridge'
     image: mysql:5.7
     container_name: mysql
     ports:
@@ -15,6 +15,8 @@ services:
       - './db:/var/lib/mysql'
       - './init:/docker-entrypoint-initdb.d/'
       - './conf/my.cnf:/etc/my.cnf'
+    networks:
+      - sell-db
   app:
     container_name: java-docker
     image: java-docker
@@ -25,5 +27,10 @@ services:
       - './logs:/logs'
     depends_on:
       - mysql
-    links:
-      - mysql
+    # links:
+    #   - mysql
+    networks:
+      - sell-db
+networks:
+  sell-db:
+    driver: bridge
