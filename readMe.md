@@ -2,6 +2,8 @@
 
 docker-compose 构建 mysql、nignx、redis、Springboot 镜像，单独构建、共同构建以及镜像之间的互联;
 
+tips: 通过 links 和 networks 实现容器互联时，在项目中可以直接通过 mysqlUrl:port 访问 mysql;
+
 ### docker-compose 构建 mysql 镜像（简单的版本）
 
 docker-compose.yml 文件配置:
