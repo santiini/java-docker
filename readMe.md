@@ -38,3 +38,57 @@ services:
   my.conf 是 mysql 的配置文件, /init 目录时初始化时执行的脚本，可以设置账号访问限制，建库建表等;
 
 - environment 配置容器的环境变量
+
+### docker-compose 构建 SpringBoot 应用, 使用 links 连接（老一代方式）
+
+docker-compose.yml 文件配置:
+
+```yml
+app:
+  container_name: java-docker
+  # java-docker 不存在时，会根据 build 的路径下的 dockerfile 构建 images;
+  image: java-docker
+  build: ./app
+  ports:
+    - '8080:8080'
+  volumes:
+    - './logs:/logs'
+```
+
+### docker-compose 连接 mysql 和 SpringBoot 应用
+
+```yml
+version: '2'
+
+services:
+  mysql:
+    network_mode: 'bridge'
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      # MYSQL_ROOT_HOST: '%'
+    restart: always
+    volumes:
+      - './db:/var/lib/mysql'
+      - './init:/docker-entrypoint-initdb.d/'
+      - './conf/my.cnf:/etc/my.cnf'
+  app:
+    container_name: java-docker
+    image: java-docker
+    build: ./app
+    ports:
+      - '8080:8080'
+    volumes:
+      - './logs:/logs'
+    # app 应用依赖于 mysql
+    depends_on:
+      - mysql
+    # links 链接 app 和 mysql
+    links:
+      - mysql
+```
+
+### docker-compose 构建 SpringBoot 应用, 使用 networks (功能强大)

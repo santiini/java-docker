@@ -15,3 +15,15 @@ services:
       - './db:/var/lib/mysql'
       - './init:/docker-entrypoint-initdb.d/'
       - './conf/my.cnf:/etc/my.cnf'
+  app:
+    container_name: java-docker
+    image: java-docker
+    build: ./app
+    ports:
+      - '8080:8080'
+    volumes:
+      - './logs:/logs'
+    depends_on:
+      - mysql
+    links:
+      - mysql
